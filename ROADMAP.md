@@ -10,21 +10,16 @@ loaded, and returns plain values.
 - `review-window`: Etsy review-window estimates (0.1.0).
 - `thank-you`: templates, placeholders, `findPolicyProblem()`, machine
   detection, product tips and the helpful-links block (0.1.0).
+- `insights`: dashboard widget builders (KPIs with a period comparison,
+  revenue by month, digital vs physical, top products, purchases by country,
+  latest reviews and rating breakdown, closing-soon unreviewed orders,
+  "viewed but not selling", stale listings, low stock, expiring soon, repeat
+  buyers) with overridable thresholds; unreviewed-order detection
+  (`unreviewedOrdersFrom`); and per-day view trends
+  (`computeListingViewTrends`).
 
 ## Next
 
-- **Dashboard widget builders.** KPIs with period comparison, revenue by
-  month, digital vs physical, top products, purchases by country, rating
-  breakdown, "viewed but not selling", stale listings, low stock, expiring
-  soon, repeat buyers. One pure function per widget over receipt, listing,
-  review and snapshot rows.
-- **Unreviewed-order logic and pagination.** Which paid orders have no
-  review yet and are inside the (estimated) review window, plus the
-  filter/search/paginate helpers. Built on `review-window`; joins reviews to
-  receipts by `transaction_id`.
-- **View-trend deltas.** Difference consecutive daily listing snapshots
-  into per-day view and favorite gains (`views` is lifetime cumulative,
-  tabulated once a day).
 - **Report builders and report-document.** Inventory, account ledger and
   payments reports as a single `ReportDocument` model, rendered to a
   self-contained HTML file (no scripts) and CSV per table (formula-looking
@@ -36,6 +31,9 @@ loaded, and returns plain values.
   the adapter onto `@richardmcquiston01/etsy-api`, mapping its responses to
   small camelCase domain types. This is the point at which the package takes
   a dependency on `@richardmcquiston01/etsy-api`.
+- **Unreviewed-order pagination.** The filter/search/paginate helpers
+  around unreviewed orders and drafts (`paginateUnreviewedOrders`,
+  `paginateDrafts`, `normalizePaging`) are still in etsy-dashboard.
 
 ## Never
 

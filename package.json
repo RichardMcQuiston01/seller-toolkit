@@ -1,6 +1,6 @@
 {
   "name": "@richardmcquiston01/seller-toolkit",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Framework-agnostic TypeScript toolkit for Etsy sellers: review-window estimates, policy-safe thank-you message drafting, sales and listing analytics, and report builders (HTML/CSV). Built on @richardmcquiston01/etsy-api. Never contacts buyers. Not affiliated with Etsy, Inc.",
   "keywords": [
     "etsy",
@@ -10,6 +10,7 @@
     "thank-you-message",
     "seller-tools",
     "analytics",
+    "dashboard",
     "typescript"
   ],
   "license": "Apache-2.0",
@@ -29,6 +30,9 @@
   "types": "./dist/index.d.ts",
   "typesVersions": {
     "*": {
+      "insights": [
+        "./dist/insights.d.cts"
+      ],
       "review-window": [
         "./dist/review-window.d.cts"
       ],
@@ -46,6 +50,16 @@
       "require": {
         "types": "./dist/index.d.cts",
         "default": "./dist/index.cjs"
+      }
+    },
+    "./insights": {
+      "import": {
+        "types": "./dist/insights.d.ts",
+        "default": "./dist/insights.js"
+      },
+      "require": {
+        "types": "./dist/insights.d.cts",
+        "default": "./dist/insights.cjs"
       }
     },
     "./review-window": {

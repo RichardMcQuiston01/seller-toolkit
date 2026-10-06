@@ -5,6 +5,7 @@ import { defineConfig } from 'tsup';
 export default defineConfig({
   entry: {
     index: 'src/index.ts',
+    insights: 'src/insights/index.ts',
     'review-window': 'src/review-window.ts',
     'thank-you': 'src/thank-you.ts',
   },
