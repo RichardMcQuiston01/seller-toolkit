@@ -152,11 +152,8 @@ so treat it as a breaking change.
   `vX.Y.Z` matching `package.json` and push the tag. The Release workflow
   builds, tests and runs `npm publish --provenance --access public` using the
   `NPM_TOKEN` repository secret.
-- First release only: `package.json` already says 0.1.0, so running
-  `changeset version` with the pending `minor` changeset
-  (`.changeset/initial-extraction.md`) would publish 0.2.0. For v0.1.0,
-  either tag as-is and delete that changeset in the release commit, or
-  consume it and accept 0.2.0 as the first version.
+- `package.json` starts at 0.0.0, so the initial `minor` changeset
+  (`.changeset/initial-extraction.md`) makes the first release 0.1.0.
 - CI (`.github/workflows/ci.yml`) runs on PRs and on pushes to `dev`/`main`:
   install with `--frozen-lockfile`, typecheck, lint, format:check, test,
   build.
