@@ -12,6 +12,10 @@ logic. See `ROADMAP.md` for what comes next.
 
 Current modules:
 
+- `src/insights/`: dashboard widgets and `buildDashboard` (`dashboard.ts`),
+  unreviewed-order detection (`unreviewed-orders.ts`, built on
+  `review-window`) and per-day view trends (`view-trends.ts`), over plain
+  rows the consumer loads.
 - `src/review-window.ts`: estimates Etsy's 100-day review window from ship or
   purchase dates (the API exposes no delivery or download date).
 - `src/thank-you.ts`: thank-you templates, `PLACEHOLDERS`, rendering,
@@ -22,6 +26,7 @@ Current modules:
 ```
 src/
   index.ts            barrel: re-exports every module
+  insights/           subpath ./insights (index.ts barrel + one file per area)
   review-window.ts    subpath ./review-window
   thank-you.ts        subpath ./thank-you
 test/                 *.test.ts (node:test + node:assert, run by Bun)
