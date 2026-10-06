@@ -6,5 +6,6 @@
  * subpath (`@richardmcquiston01/seller-toolkit/thank-you`, ...).
  */
 
+export * from './insights/index.js';
 export * from './review-window.js';
 export * from './thank-you.js';

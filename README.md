@@ -21,14 +21,15 @@ declarations.
 
 Available now:
 
-| Module          | Import path                                        | What it does                                                                                                                                                                    |
-| --------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `review-window` | `@richardmcquiston01/seller-toolkit/review-window` | Estimates when Etsy's 100-day review window opens and closes for an order, from the ship or purchase date the Open API v3 actually exposes.                                     |
-| `thank-you`     | `@richardmcquiston01/seller-toolkit/thank-you`     | Thank-you message templates with `{{PLACEHOLDERS}}`, rendering, machine detection from item titles, and `findPolicyProblem()`, which refuses incentives, rating asks and links. |
+| Module          | Import path                                        | What it does                                                                                                                                                                                              |
+| --------------- | -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `insights`      | `@richardmcquiston01/seller-toolkit/insights`      | Shop dashboard widgets (sales with a period comparison, revenue by month, top products, ratings, listing alerts, repeat buyers), unreviewed-order detection and per-day view trends from daily snapshots. |
+| `review-window` | `@richardmcquiston01/seller-toolkit/review-window` | Estimates when Etsy's 100-day review window opens and closes for an order, from the ship or purchase date the Open API v3 actually exposes.                                                               |
+| `thank-you`     | `@richardmcquiston01/seller-toolkit/thank-you`     | Thank-you message templates with `{{PLACEHOLDERS}}`, rendering, machine detection from item titles, and `findPolicyProblem()`, which refuses incentives, rating asks and links.                           |
 
-Everything is also exported from the package root. More modules (dashboard
-widgets, unreviewed-order detection, view trends, report builders) are
-planned; see [ROADMAP.md](./ROADMAP.md).
+Everything is also exported from the package root. More modules (report
+builders, video argument builders) are planned; see
+[ROADMAP.md](./ROADMAP.md).
 
 ## Getting Started
 
@@ -108,6 +109,79 @@ const message = renderThankYou('warm', {
 });
 // "Hi Karen,\n\nThank you so much for ordering the F2 Ultra UV Laser Jig. ..."
 ```
+
+**Shop insights.** Load your own rows (Prisma, SQL, a JSON export of
+synced Etsy data), then build every dashboard widget in one call. Money is in
+minor units (integer cents); ids are `bigint`. Results are JSON-ready: ids as
+strings, dates as ISO strings.
+
+```ts
+import {
+  buildDashboard,
+  snapshotsNeededSince,
+  unreviewedOrdersFrom,
+} from '@richardmcquiston01/seller-toolkit/insights';
+
+const now = new Date();
+// Your own queries. Receipts: paid and not canceled, with line items.
+const receipts = await loadPaidReceipts();
+const reviews = await loadReviews(); // from getReviewsByShop (has transaction_id)
+const listings = await loadListings();
+const snapshots = await loadViewSnapshots(snapshotsNeededSince('90d', now));
+
+// Orders with no review whose (estimated) review window is open now.
+const unreviewedOrders = unreviewedOrdersFrom(
+  receipts, // UnreviewedReceiptRow[]
+  reviews.map((review) => review.etsyTransactionId),
+  now
+);
+
+const dashboard = buildDashboard(
+  { receipts, reviews, listings, snapshots, unreviewedOrders },
+  {
+    now,
+    period: '90d', // '30d' | '90d' | '365d' | 'all'
+    timeZone: 'America/New_York', // month buckets
+    thresholds: { lowStockThreshold: 3 }, // optional; defaults below
+  }
+);
+dashboard.totals; // { orders, revenue, units, averageOrderValue }
+dashboard.previousTotals; // the 90 days before, for comparison
+dashboard.lowStock.items; // [{ etsyListingId, title, value: quantity, ... }]
+```
+
+Each widget is also its own function (`salesTotals`, `monthlySales`,
+`salesByCountry`, `topProducts`, `ratingBreakdown`, `closingSoon`,
+`viewsGained`, `viewedNotSelling`, `staleListings`, `lowStock`,
+`expiringSoon`, `repeatBuyers`, `fulfilmentMix`, ...). Sales are receipts
+that aren't canceled or fully refunded, and money totals only add orders in
+the shop's most common currency. The thresholds default to
+`DEFAULT_DASHBOARD_THRESHOLDS`: top-5 lists, 12 months in the chart, stale
+after 90 days without a sale, low stock at 2 or fewer, expiring within 14
+days, and "viewed but not selling" at 25+ views gained in 30 days.
+
+Etsy's listing `views` is a lifetime total tabulated once a day, with no
+history. Snapshot it daily, then `computeListingViewTrends` differences
+consecutive snapshots into per-day gains:
+
+```ts
+import { computeListingViewTrends } from '@richardmcquiston01/seller-toolkit/insights';
+
+computeListingViewTrends([
+  {
+    id: 'local-1',
+    etsyListingId: 1234567890n,
+    title: 'Pencil Jig',
+    statSnapshots: [
+      { capturedOn: new Date('2026-10-01'), viewsTotal: 100, favorersTotal: 4 },
+      { capturedOn: new Date('2026-10-03'), viewsTotal: 130, favorersTotal: 5 },
+    ],
+  },
+]); // [{ daysSpan: 2, viewsDelta: 30, viewsPerDay: 15, favorersDelta: 1, ... }]
+```
+
+Etsy's API has no Ads, visits, conversion or search-term data, so none of
+that is (or can be) here.
 
 ### Examples
 
