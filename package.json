@@ -1,6 +1,6 @@
 {
   "name": "@richardmcquiston01/seller-toolkit",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Framework-agnostic TypeScript toolkit for Etsy sellers: review-window estimates, policy-safe thank-you message drafting, sales and listing analytics, and report builders (HTML/CSV). Built on @richardmcquiston01/etsy-api. Never contacts buyers. Not affiliated with Etsy, Inc.",
   "keywords": [
     "etsy",
