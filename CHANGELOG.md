@@ -4,6 +4,13 @@ All notable changes to `@richardmcquiston01/seller-toolkit` are recorded
 here by [Changesets](https://github.com/changesets/changesets). Don't edit
 entries by hand; add a changeset with `bun run changeset` instead.
 
+## 0.2.1
+
+### Patch Changes
+
+- 8bef46f: Add a `funding` entry to `package.json` so `npm fund` and the npm package page
+  link to the project's Stripe donation page. No code changes.
+
 ## 0.2.0
 
 ### Minor Changes
