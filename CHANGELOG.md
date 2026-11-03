@@ -4,6 +4,12 @@ All notable changes to `@richardmcquiston01/seller-toolkit` are recorded
 here by [Changesets](https://github.com/changesets/changesets). Don't edit
 entries by hand; add a changeset with `bun run changeset` instead.
 
+## 0.2.2
+
+### Patch Changes
+
+- Switch the donate link, QR code and `funding` URL in `package.json` from Stripe to PayPal, and make the README donate QR image 180 px wide. No code changes.
+
 ## 0.2.1
 
 ### Patch Changes
